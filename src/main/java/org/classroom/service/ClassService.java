@@ -1,6 +1,9 @@
 package org.classroom.service;
 
-import org.classroom.domain.Classes;
+import java.util.Set;
+
+import org.classroom.service.dto.ClassesDTO;
+import org.classroom.service.dto.StudentDTO;
 
 /**
  * Service interface to handle CRUD operations for the Class domain
@@ -14,7 +17,7 @@ public interface ClassService {
      *
      * @return A list of all the classes in the app
      */
-    Iterable<Classes> list();
+    Iterable<ClassesDTO> list();
 
     /**
      * Creates a new Class object
@@ -23,7 +26,7 @@ public interface ClassService {
      *
      * @return the class created with the new ID
      */
-    Classes create(Classes classes);
+    ClassesDTO create(ClassesDTO classes);
 
     /**
      * Search the class from the current ID
@@ -32,7 +35,7 @@ public interface ClassService {
      *
      * @return a the class corresponding the ID
      */
-    Classes read(long id);
+    ClassesDTO read(long id);
 
     /**
      * Updates a Class
@@ -41,7 +44,7 @@ public interface ClassService {
      * @param classes the class being updated
      * @return
      */
-    Classes update(long id, Classes classes);
+    ClassesDTO update(long id, ClassesDTO classes);
 
     /**
      * Deletes a class object
@@ -49,4 +52,6 @@ public interface ClassService {
      * @param id the class ID
      */
     void delete(long id);
+
+    Set<StudentDTO> addStudent(long id, StudentDTO student);
 }

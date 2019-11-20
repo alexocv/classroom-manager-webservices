@@ -1,6 +1,6 @@
 package org.classroom.service;
 
-import org.classroom.domain.Student;
+import org.classroom.service.dto.StudentDTO;
 
 /**
  * Service interface to handle CRUD operations for the Student domain
@@ -14,7 +14,7 @@ public interface StudentService {
      *
      * @return A list of all the Student in the App
      */
-    Iterable<Student> list();
+    Iterable<StudentDTO> list();
 
     /**
      * Creates a new Student object
@@ -23,7 +23,7 @@ public interface StudentService {
      *
      * @return the Student created with the new ID
      */
-    Student create(Student student);
+    StudentDTO create(StudentDTO student);
 
     /**
      * Search the Student from the current ID
@@ -32,7 +32,7 @@ public interface StudentService {
      *
      * @return a the Student corresponding the ID
      */
-    Student read(long id);
+    StudentDTO read(long id);
 
     /**
      * Updates a Class
@@ -42,7 +42,7 @@ public interface StudentService {
      *
      * @return the updated Student
      */
-    Student update(long id, Student student);
+    StudentDTO update(long id, StudentDTO student);
 
     /**
      * Deletes a Student object

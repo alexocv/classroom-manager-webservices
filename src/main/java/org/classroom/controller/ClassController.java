@@ -2,10 +2,10 @@ package org.classroom.controller;
 
 import java.util.Set;
 
-import org.classroom.domain.Classes;
-import org.classroom.domain.Student;
 import org.classroom.service.ClassService;
 import org.classroom.service.StudentService;
+import org.classroom.service.dto.ClassesDTO;
+import org.classroom.service.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +44,7 @@ public class ClassController {
      * @return a list of all the classes in DB
      */
     @RequestMapping( value = "/", method = RequestMethod.GET )
-    public Iterable<Classes> list(){
+    public Iterable<ClassesDTO> list(){
         return classService.list();
     }
 
@@ -56,7 +56,7 @@ public class ClassController {
      * @return the created Class
      */
     @RequestMapping( value = "/", method = RequestMethod.POST )
-    public Classes create(@RequestBody Classes classes){
+    public ClassesDTO create(@RequestBody ClassesDTO classes){
         return classService.create(classes);
     }
 
@@ -67,7 +67,7 @@ public class ClassController {
      * @return the class found.
      */
     @RequestMapping( value = "/{id}", method = RequestMethod.GET )
-    public Classes read(@PathVariable(value="id") long id){
+    public ClassesDTO read(@PathVariable(value="id") long id){
         return classService.read(id);
     }
 
@@ -77,8 +77,8 @@ public class ClassController {
      * @return Students in the class
      */
     @RequestMapping( value = "/{id}/student", method = RequestMethod.GET )
-    public Set<Student> readStudents(@PathVariable(value="id") long id){
-        return classService.read(id).getStudents();
+    public Set<StudentDTO> readStudents(@PathVariable(value="id") long id){
+        return  classService.read(id).getStudents();
     }
 
     /**
@@ -88,14 +88,11 @@ public class ClassController {
      * @return the students in the class
      */
     @RequestMapping( value = "/{id}/student", method = RequestMethod.POST )
-    public Set<Student> addStudents
-        (@PathVariable(value="id") long id, @RequestBody Student student) {
-        Student studentDB = studentService.read(student.getId());
-        Classes currentClass = classService.read(id);
-        currentClass.getStudents().add(studentDB);
+    public Set<StudentDTO> addStudents
+        (@PathVariable(value="id") long id, @RequestBody StudentDTO student) {
 
-        classService.create(currentClass);
-        return currentClass.getStudents();
+        return classService.addStudent(id, student);
+
     }
 
     /**
@@ -106,7 +103,7 @@ public class ClassController {
      * @return the updated class
      */
     @RequestMapping( value = "/{id}", method = RequestMethod.PUT )
-    public Classes update(@PathVariable(value="id") long id, @RequestBody Classes classes){
+    public ClassesDTO update(@PathVariable(value="id") long id, @RequestBody ClassesDTO classes){
         return classService.update(id, classes);
     }
 
