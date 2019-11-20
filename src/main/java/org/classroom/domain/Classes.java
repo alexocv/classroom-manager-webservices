@@ -2,6 +2,7 @@ package org.classroom.domain;
 
 import java.util.HashSet;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -38,6 +39,7 @@ public class Classes {
     @JoinTable(name = "class_students",
             joinColumns = { @JoinColumn(name = "class_id") },
             inverseJoinColumns = { @JoinColumn(name = "student_id") })
+    @JsonManagedReference
     private Set<Student> students = new HashSet<>();
 
     @SuppressWarnings("unused")

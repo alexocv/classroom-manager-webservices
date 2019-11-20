@@ -2,6 +2,7 @@ package org.classroom.domain;
 
 import java.util.HashSet;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -29,14 +30,13 @@ public class Student {
     private String firstName;
     private String lastName;
 
-
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                 CascadeType.PERSIST,
                 CascadeType.MERGE
             },
             mappedBy = "students")
-
+    @JsonBackReference
     private Set<Classes> classes = new HashSet<>();
 
 
