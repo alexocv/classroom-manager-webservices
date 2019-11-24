@@ -2,6 +2,7 @@ package org.classroom.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.transaction.Transactional;
@@ -9,6 +10,7 @@ import javax.transaction.Transactional;
 import org.classroom.repository.StudentRepository;
 import org.classroom.service.dto.ClassesDTO;
 import org.classroom.service.dto.StudentDTO;
+import org.classroom.service.exceptions.ResourceNotFoundException;
 import org.classroom.domain.Classes;
 import org.classroom.domain.Student;
 import org.classroom.repository.ClassRepository;
@@ -24,8 +26,8 @@ public class ClassroomServiceImpl implements ClassService {
     private ModelMapper modelMapper;
 
     @Autowired
-    public ClassroomServiceImpl(
-        ClassRepository classRepository, StudentRepository studentRepository, ModelMapper modelMapper) {
+    public ClassroomServiceImpl(ClassRepository classRepository, StudentRepository studentRepository,
+            ModelMapper modelMapper) {
         this.classRepository = classRepository;
         this.studentRepository = studentRepository;
         this.modelMapper = modelMapper;
@@ -45,7 +47,10 @@ public class ClassroomServiceImpl implements ClassService {
 
     @Override
     public ClassesDTO read(long id) {
-        return convertToDto(classRepository.findOne(id));
+        Classes classes = classRepository.findOne(id);
+        checkIfClassIsPresent(classes, id);
+
+        return convertToDto(classes);
     }
 
     @Override
@@ -57,6 +62,9 @@ public class ClassroomServiceImpl implements ClassService {
 
     @Override
     public void delete(long id) {
+        Classes classes = classRepository.findOne(id);
+        checkIfClassIsPresent(classes, id);
+
         classRepository.delete(id);
     }
 
@@ -71,6 +79,8 @@ public class ClassroomServiceImpl implements ClassService {
     public Set<StudentDTO> addStudent(long id, StudentDTO studentDTO) {
         Student student = studentRepository.findOne(studentDTO.getId());
         Classes classes = classRepository.findOne(id);
+
+        checkIfClassIsPresent(classes, id);
         classes.getStudents().add(student);
         ClassesDTO classesDTO = convertToDto(classRepository.save(classes));
         return classesDTO.getStudents();
@@ -87,6 +97,8 @@ public class ClassroomServiceImpl implements ClassService {
         if (classesDTO.getId() != null) {
             Classes oldClasses = classRepository.findOne(classesDTO.getId());
 
+            checkIfClassIsPresent(oldClasses, classesDTO.getId());
+
             if (classesDTO.getTitle() != null) {
                 oldClasses.setTitle(classesDTO.getTitle());
             }
@@ -99,5 +111,10 @@ public class ClassroomServiceImpl implements ClassService {
         return classes;
     }
 
+    private void checkIfClassIsPresent(Classes classes, Long id) {
+        if (Objects.isNull(classes)) {
+            throw ResourceNotFoundException.getNotFoundExceptionFromID("Classes", id);
 
+        }
+    }
 }

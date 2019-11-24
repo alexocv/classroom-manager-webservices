@@ -2,6 +2,7 @@ package org.classroom.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
@@ -9,6 +10,7 @@ import org.classroom.domain.Classes;
 import org.classroom.domain.Student;
 import org.classroom.repository.StudentRepository;
 import org.classroom.service.dto.StudentDTO;
+import org.classroom.service.exceptions.ResourceNotFoundException;
 import org.classroom.repository.ClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class StudentServiceImpl implements StudentService {
 
     private StudentRepository studentRepository;
     private ModelMapper modelMapper;
+
     @Autowired
     public StudentServiceImpl(StudentRepository studentRepository, ModelMapper modelMapper) {
         this.studentRepository = studentRepository;
@@ -39,6 +42,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentDTO read(long id) {
         Student student = studentRepository.findOne(id);
+        checkIfStudentIsPresent(student, id);
         return convertToDto(student);
     }
 
@@ -51,11 +55,13 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void delete(long id) {
+        Student student = studentRepository.findOne(id);
+        checkIfStudentIsPresent(student, id);
         studentRepository.delete(id);
     }
 
     @Override
-    public StudentDTO update(long id,  StudentDTO studentDTO) {
+    public StudentDTO update(long id, StudentDTO studentDTO) {
         Student student = convertToEntity(studentDTO);
         return convertToDto(studentRepository.save(student));
     }
@@ -70,6 +76,9 @@ public class StudentServiceImpl implements StudentService {
 
         if (studentDTO.getId() != null) {
             Student oldStudent = studentRepository.findOne(studentDTO.getId());
+
+            checkIfStudentIsPresent(oldStudent, studentDTO.getId());
+
             if (studentDTO.getFirstName() != null) {
                 oldStudent.setFirstName(studentDTO.getFirstName());
             }
@@ -79,5 +88,12 @@ public class StudentServiceImpl implements StudentService {
             return oldStudent;
         }
         return student;
+    }
+
+    private void checkIfStudentIsPresent(Student student, Long id) {
+        if (Objects.isNull(student)) {
+            throw ResourceNotFoundException.getNotFoundExceptionFromID("Student", id);
+
+        }
     }
 }
