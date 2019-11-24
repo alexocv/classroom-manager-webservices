@@ -37,7 +37,7 @@ public class Classes {
                 CascadeType.MERGE
             })
     @JoinTable(name = "class_students",
-            joinColumns = { @JoinColumn(name = "class_id") },
+            joinColumns = { @JoinColumn(name = "classes_id") },
             inverseJoinColumns = { @JoinColumn(name = "student_id") })
     @JsonManagedReference
     private Set<Student> students = new HashSet<>();

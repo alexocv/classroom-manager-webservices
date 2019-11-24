@@ -62,17 +62,6 @@ public class StudentController {
     }
 
     /**
-     * Get the classes from the student
-     * @param id the student id
-     * @return the classes from the student
-     */
-    @RequestMapping( value = "/{id}/classes", method = RequestMethod.GET )
-    public Set<ClassesDTO> readClasses(@PathVariable(value="id") long id) {
-        return studentService.read(id).getClasses();
-
-    }
-
-    /**
      * Deletes the student by id
      * @param id
      */

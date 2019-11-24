@@ -20,5 +20,4 @@ public class StudentDTO {
     private Long id;
     private String firstName;
     private String lastName;
-    private Set<ClassesDTO> classes;
 }
